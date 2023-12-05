@@ -36,8 +36,8 @@ fn part2(input: &str) -> u32 {
     count.into_values().sum::<u32>()
 }
 
-fn main() {
-    let input = include_str!("./input");
+pub fn main() {
+    let input = include_str!("../../input/day04");
     let part1 = input
         .lines()
         .filter_map(point_worth)

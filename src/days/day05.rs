@@ -1,3 +1,4 @@
+use itertools::Itertools;
 use std::{error::Error, ops::Range};
 
 #[derive(Debug, PartialEq, Eq)]
@@ -36,21 +37,22 @@ fn parse_seeds(seeds: &str) -> Vec<i64> {
         .split(' ')
         .skip(1)
         .map(|no| no.parse().unwrap())
-        .collect()
+        .collect_vec()
 }
 
 fn parse_seeds_ranges(seeds: &str) -> Vec<Range<i64>> {
     seeds
         .split(' ')
         .skip(1)
-        .step_by(2)
-        .zip(seeds.split(' ').skip(2).step_by(2))
-        .map(|(no, range)| {
-            let no: i64 = no.parse().unwrap();
-            let range: i64 = range.parse().unwrap();
+        .chunks(2)
+        .into_iter()
+        .map(|vec| {
+            let parts = vec.collect_vec();
+            let no: i64 = parts[0].parse().unwrap();
+            let range: i64 = parts[1].parse().unwrap();
             no..(no + range)
         })
-        .collect()
+        .collect_vec()
 }
 
 fn get_maps(map: &str) -> Result<Vec<ConvertMap>, Box<dyn Error>> {
@@ -132,17 +134,20 @@ mod test {
     }
 }
 
-fn main() {
-    let input = include_str!("./input");
-    let seeds = parse_seeds(input.lines().next().unwrap());
-    let seeds_ranges = parse_seeds_ranges(input.lines().next().unwrap());
-    let categories: Vec<_> = input
+pub fn main() {
+    let input = include_str!("../../input/day05");
+    let categories = input
         .split("\n\n")
         .skip(1)
         .map(get_maps)
         .map(|map| map.unwrap())
-        .collect();
+        .collect_vec();
 
+    let seeds = parse_seeds(input.lines().next().unwrap());
+    let part1 = part1(&seeds, &categories);
+    println!("part 1: {part1}");
+
+    let seeds_ranges = parse_seeds_ranges(input.lines().next().unwrap());
     let part2 = part2(&seeds_ranges, &categories);
     println!("part 2: {part2}");
 }

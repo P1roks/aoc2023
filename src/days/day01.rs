@@ -29,8 +29,8 @@ fn first_last_dig(line: &str) -> u32 {
     first.unwrap() * 10 + last.unwrap()
 }
 
-fn main() {
-    let mut input: String = String::from(include_str!("./input"));
+pub fn main() {
+    let mut input: String = String::from(include_str!("../../input/day01"));
 
     // Really bad but this problem is mid so w/e
     let part2 = true;

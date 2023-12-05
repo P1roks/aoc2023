@@ -153,8 +153,8 @@ fn gears_sum(schematic: &[&str], gear: char) -> u64 {
     sum
 }
 
-fn main() {
-    let input: Vec<_> = include_str!("./input").split('\n').collect();
+pub fn main() {
+    let input: Vec<_> = include_str!("../../input/day03").split('\n').collect();
     println!("part 1: {}", part_numbers_sum(&input));
     println!("part 2: {}", gears_sum(&input, '*'));
 }

@@ -56,8 +56,8 @@ fn parse_line(line: &str, no: u32) -> Cube {
     cube
 }
 
-fn main() {
-    let input = include_str!("./input");
+pub fn main() {
+    let input = include_str!("../../input/day02");
 
     let cubes = input
         .lines()
