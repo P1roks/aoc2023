@@ -1,7 +1,7 @@
 mod days;
 use std::env;
 
-use days::{day01, day02, day03, day04, day05};
+use days::{day01, day02, day03, day04, day05, day06};
 
 fn main() {
     let day = env::args()
@@ -17,6 +17,7 @@ fn main() {
         3 => day03::main(),
         4 => day04::main(),
         5 => day05::main(),
+        6 => day06::main(),
         _ => unimplemented!("No more day for now!"),
     };
 }
