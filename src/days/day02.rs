@@ -8,11 +8,7 @@ struct Cube {
 
 impl Cube {
     fn satisfies_part1(&self) -> bool {
-        if self.red <= 12 && self.green <= 13 && self.blue <= 14 {
-            true
-        } else {
-            false
-        }
+        self.red <= 12 && self.green <= 13 && self.blue <= 14
     }
 
     fn get_power(&self) -> u32 {
@@ -47,7 +43,7 @@ fn parse_line(line: &str, no: u32) -> Cube {
             "red" => cube.red = max(cube.red, number),
             "green" => cube.green = max(cube.green, number),
             "blue" => cube.blue = max(cube.blue, number),
-            err @ _ => unreachable!(
+            err => unreachable!(
                 "Invalid color supplied! Valid colors are red, green, blue. Supplied value: {err}"
             ),
         }

@@ -1,12 +1,11 @@
 mod days;
 use std::env;
 
-use days::{day01, day02, day03, day04, day05, day06};
+use days::{day01, day02, day03, day04, day05, day06, day07};
 
 fn main() {
     let day = env::args()
-        .skip(1)
-        .next()
+        .nth(1)
         .expect("Usage: cargo r -- <day>")
         .parse::<u8>()
         .unwrap_or(0);
@@ -18,6 +17,7 @@ fn main() {
         4 => day04::main(),
         5 => day05::main(),
         6 => day06::main(),
+        7 => day07::main(),
         _ => unimplemented!("No more day for now!"),
     };
 }

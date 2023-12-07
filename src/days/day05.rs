@@ -61,10 +61,7 @@ fn get_maps(map: &str) -> Result<Vec<ConvertMap>, Box<dyn Error>> {
 
 fn seed_location(mut source: i64, categories: &[Vec<ConvertMap>]) -> i64 {
     for category in categories {
-        let valid = category
-            .iter()
-            .skip_while(|map| map.convert(source).is_none())
-            .next();
+        let valid = category.iter().find(|map| map.convert(source).is_some());
         if let Some(map) = valid {
             source = map.convert(source).unwrap();
         }
@@ -82,7 +79,7 @@ fn part1(seeds: &[i64], categories: &[Vec<ConvertMap>]) -> i64 {
 
 fn part2(seeds_range: &[Range<i64>], categories: &[Vec<ConvertMap>]) -> i64 {
     let mut location = i64::MAX;
-    for range in seeds_range.into_iter() {
+    for range in seeds_range.iter() {
         location = std::cmp::min(
             range
                 .clone()

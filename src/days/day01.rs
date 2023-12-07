@@ -9,7 +9,7 @@ fn first_last_dig(line: &str) -> u32 {
         T: Iterator<Item = char>,
     {
         if let Some(number) = iterator.next() {
-            if number.is_digit(10) {
+            if number.is_ascii_digit() {
                 return number.to_digit(10);
             }
             return None;
