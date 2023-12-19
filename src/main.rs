@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, time::Instant};
 
 mod days;
 use days::{day01, day02, day03, day04, day05, day06, day07, day08, day09, day10, day11};
@@ -10,6 +10,7 @@ fn main() {
         .parse::<u8>()
         .unwrap_or(0);
 
+    let time = Instant::now();
     match day {
         1 => day01::main(),
         2 => day02::main(),
@@ -24,4 +25,5 @@ fn main() {
         11 => day11::main(),
         _ => unimplemented!("No more day for now!"),
     };
+    println!("elapsed: {}s", time.elapsed().as_secs_f64());
 }

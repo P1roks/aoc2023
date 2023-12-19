@@ -188,5 +188,5 @@ impl Map {
 pub fn main() {
     let map = Map::from_lines(include_bytes!("../../input/day10").to_vec());
     let p1 = map.part1();
-    println!("{p1}");
+    println!("part 1: {p1}");
 }
