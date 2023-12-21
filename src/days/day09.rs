@@ -14,7 +14,7 @@ fn part1(history: Vec<i64>) -> i64 {
         .collect_vec();
 
     if changes.iter().all(|change| *change == 0) {
-        return *history.iter().last().unwrap();
+        return *history.first().unwrap();
     }
 
     history.iter().last().unwrap() + part1(changes)
@@ -28,10 +28,10 @@ fn part2(history: Vec<i64>) -> i64 {
         .collect_vec();
 
     if changes.iter().all(|change| *change == 0) {
-        return *history.iter().next().unwrap();
+        return *history.first().unwrap();
     }
 
-    history.iter().next().unwrap() - part2(changes)
+    history.first().unwrap() - part2(changes)
 }
 
 pub fn main() {

@@ -1,7 +1,9 @@
 use std::{env, time::Instant};
 
 mod days;
-use days::{day01, day02, day03, day04, day05, day06, day07, day08, day09, day10, day11, day15};
+use days::{
+    day01, day02, day03, day04, day05, day06, day07, day08, day09, day10, day11, day14, day15,
+};
 
 fn main() {
     let day = env::args()
@@ -23,6 +25,7 @@ fn main() {
         9 => day09::main(),
         10 => day10::main(),
         11 => day11::main(),
+        14 => day14::main(),
         15 => day15::main(),
         _ => unimplemented!("No more day for now!"),
     };

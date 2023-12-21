@@ -62,6 +62,7 @@ struct Draw {
 }
 
 impl Draw {
+    #[allow(dead_code)]
     fn get_rank_frequency_part1(frequency: HashMap<char, u8>) -> Rank {
         let mut max_val = 1;
         for val in frequency.into_values() {

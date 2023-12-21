@@ -31,15 +31,6 @@ enum Direction {
 }
 
 impl Direction {
-    fn get_opposite(self) -> Self {
-        match self {
-            North => South,
-            South => North,
-            East => West,
-            West => East,
-        }
-    }
-
     fn enter_pipe(self, pipe: &Pipe) -> Direction {
         match (pipe, self) {
             (NorthSouth, North) => North,
