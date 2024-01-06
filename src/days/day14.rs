@@ -1,5 +1,7 @@
 use itertools::Itertools;
 
+const MAX_LOAD: usize = 100usize;
+
 #[derive(Debug)]
 struct Coords {
     x: usize,
@@ -27,13 +29,10 @@ fn get_rocks(positions: &&[u8]) -> Vec<(Coords, Rock)> {
     rocks
 }
 
-fn part1(positions: &&[u8]) -> usize {
-    let max_load = 100usize;
-    let mut rocks = get_rocks(positions);
-    let mut sum = 0;
+fn shift_north(rocks: &mut Vec<(Coords, Rock)>) {
     rocks.sort_by_key(|rock| (rock.0.x, rock.0.y));
 
-    for (_, group) in &rocks.iter().group_by(|rock| rock.0.x) {
+    for (_, group) in &rocks.iter_mut().group_by(|rock| rock.0.x) {
         let mut low_y = 0;
         for (coords, rock_type) in group {
             match rock_type {
@@ -41,18 +40,28 @@ fn part1(positions: &&[u8]) -> usize {
                     low_y = coords.y + 1;
                 }
                 Rock::Round => {
-                    sum += max_load - low_y;
+                    coords.y = low_y;
                     low_y += 1;
                 }
             };
         }
     }
+}
 
-    sum
+fn get_north_load(rocks: Vec<(Coords, Rock)>) -> usize {
+    rocks
+        .iter()
+        .map(|(coords, rock_type)| match rock_type {
+            Rock::Cube => 0,
+            Rock::Round => MAX_LOAD - coords.y,
+        })
+        .sum()
 }
 
 pub fn main() {
     let input = &include_bytes!("../../input/day14")[..];
-    let p1 = part1(&input);
+    let mut rocks = get_rocks(&input);
+    shift_north(&mut rocks);
+    let p1 = get_north_load(rocks);
     println!("part 1: {p1}");
 }
