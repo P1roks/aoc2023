@@ -3,7 +3,7 @@ use std::{env, time::Instant};
 mod days;
 use days::{
     day01, day02, day03, day04, day05, day06, day07, day08, day09, day10, day11, day13, day14,
-    day15,
+    day15, day19,
 };
 
 fn main() {
@@ -29,6 +29,7 @@ fn main() {
         13 => day13::main(),
         14 => day14::main(),
         15 => day15::main(),
+        19 => day19::main(),
         _ => unimplemented!("No more day for now!"),
     };
     println!("elapsed: {}s", time.elapsed().as_secs_f64());
