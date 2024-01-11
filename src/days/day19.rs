@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, ops::Sub};
 
 use itertools::Itertools;
 
@@ -11,7 +11,7 @@ impl ToNum for &[u8] {
         let mut number = 0u32;
         for byte in self.iter() {
             number *= 10;
-            number += (byte - 48) as u32;
+            number += byte.sub(48) as u32;
         }
         number
     }
@@ -22,7 +22,7 @@ impl ToNum for &[&u8] {
         let mut number = 0u32;
         for byte in self.iter() {
             number *= 10;
-            number += (**byte - 48) as u32;
+            number += byte.sub(48) as u32;
         }
         number
     }
