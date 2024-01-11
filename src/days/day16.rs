@@ -1,10 +1,10 @@
+use std::cmp::max;
 use std::collections::HashMap;
 use std::ops::{Index, IndexMut};
 use Direction::*;
 use ObjectType::*;
 
-const TTL: usize = 700usize;
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 enum ObjectType {
     ForwardMirror,      // /
     BackwardMirror,     // \
@@ -12,7 +12,7 @@ enum ObjectType {
     VerticalSplitter,   // |
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Object {
     r#type: ObjectType,
     // left, right, up, down
@@ -85,7 +85,7 @@ impl Coords {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Area {
     objects: HashMap<Coords, Object>,
     max_x: usize,
@@ -225,14 +225,10 @@ impl Area {
     }
 }
 
-fn solve_part1(mut area: Area) -> usize {
+fn path_length(mut area: Area, start_beam: Beam) -> usize {
     let mut energized = Energized::new(&area);
 
-    let mut beams = vec![Beam {
-        coords: Coords { x: 1, y: 1 },
-        direction: Right,
-        delete: false,
-    }];
+    let mut beams = vec![start_beam];
 
     while !beams.is_empty() {
         let mut new_beams: Vec<Beam> = vec![];
@@ -252,18 +248,55 @@ fn solve_part1(mut area: Area) -> usize {
             beam.tick();
         }
 
-        for beam in new_beams.drain(..) {
-            beams.push(beam);
-        }
-        beams.retain(|beam| !beam.is_oob(area.max_x, area.max_y) && !beam.delete);
+        beams.append(&mut new_beams);
+        beams.retain(|beam| !beam.delete && !beam.is_oob(area.max_x, area.max_y));
     }
 
     energized.sum()
 }
 
+// This can be optimized but it already runs in 0.7s in Debug mode, so no need to
+fn longest_edge_path(area: &Area) -> usize {
+    let mut max_path = 0usize;
+
+    fn pth_len(area: Area, x: usize, y: usize, direction: Direction) -> usize {
+        path_length(
+            area,
+            Beam {
+                coords: Coords { x, y },
+                direction,
+                delete: false,
+            },
+        )
+    }
+
+    // max_x == max_y in this case, but generalised solution is (almost) always better
+    for idx in 1..area.max_x {
+        max_path = max(max_path, pth_len(area.clone(), idx, 1, Down));
+        max_path = max(max_path, pth_len(area.clone(), idx, area.max_y, Up));
+    }
+
+    for idx in 1..area.max_y {
+        max_path = max(max_path, pth_len(area.clone(), 1, idx, Right));
+        max_path = max(max_path, pth_len(area.clone(), area.max_x, idx, Left));
+    }
+
+    max_path
+}
+
 pub fn main() {
     let input = include_bytes!("../../input/day16");
     let area = Area::from_bytes(input);
-    let p1 = solve_part1(area);
-    println!("part : {p1}");
+    let p1 = path_length(
+        area.clone(),
+        Beam {
+            direction: Right,
+            coords: Coords { x: 1, y: 1 },
+            delete: false,
+        },
+    );
+    println!("part1 : {p1}");
+
+    let p2 = longest_edge_path(&area);
+    println!("part2 : {p2}");
 }

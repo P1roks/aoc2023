@@ -102,7 +102,13 @@ impl Rule {
             Some(b's') => Symbol::S,
             _ => panic!(),
         };
-        let less_than = it.next().is_some_and(|x| *x == b'<');
+        let less_than = {
+            if let Some(symbol) = it.next() {
+                *symbol == b'<'
+            } else {
+                false
+            }
+        };
         let value = it
             .take_while(|byte| **byte != b':')
             .collect_vec()
