@@ -67,16 +67,15 @@ impl Map {
     }
 
     #[deprecated]
+    #[allow(unused)]
     fn print(&self) {
-        let mut cnt = 0;
-        for item in self.occupied.iter() {
+        for (cnt, item) in self.occupied.iter().enumerate() {
             if cnt != 0 && cnt % self.row_len == 0 {
                 println!();
             }
 
             let symbol = if *item { "#" } else { "." };
             print!("{symbol}");
-            cnt += 1;
         }
         println!();
     }
@@ -121,15 +120,13 @@ fn solve_part1(map: &Map, start: Coords) -> usize {
         let mut old_steps = HashSet::<Coords>::new();
         std::mem::swap(&mut possible, &mut old_steps);
         for coord in old_steps.drain() {
-            for new_pos in map.get_possible_steps(coord) {
-                if let Some(new_pos) = new_pos {
-                    possible.insert(new_pos);
-                }
+            for new_pos in map.get_possible_steps(coord).into_iter().flatten() {
+                possible.insert(new_pos);
             }
         }
     }
 
-    possible.iter().count()
+    possible.len()
 }
 
 pub fn main() {

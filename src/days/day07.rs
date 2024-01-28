@@ -18,7 +18,7 @@ enum Card {
     Ace,
     King,
     Queen,
-    // Jack,
+    Jack,
     Tower,
     Nine,
     Eight,
@@ -28,7 +28,7 @@ enum Card {
     Four,
     Three,
     Two,
-    Jack,
+    //Jack,
 }
 
 impl TryFrom<char> for Card {
@@ -136,21 +136,6 @@ impl Draw {
     }
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn valid_card_parse() {
-        assert_eq!(Rank::FullHouse, Draw::parse_draw("AJJAA 1").rank);
-        assert_eq!(Rank::HighCard, Draw::parse_draw("23456 1").rank);
-        assert_eq!(Rank::TwoPair, Draw::parse_draw("2JJAA 1").rank);
-        assert_eq!(Rank::FiveOfKind, Draw::parse_draw("AAAAA 1").rank);
-        assert_eq!(Rank::FourOfKind, Draw::parse_draw("QQJQQ 1").rank);
-        assert_eq!(Rank::ThreeOfKind, Draw::parse_draw("A23AA 1").rank);
-    }
-}
-
 pub fn main() {
     let input = include_str!("../../input/day07");
     let mut parsed = input.lines().map(Draw::parse_draw).collect_vec();
@@ -162,4 +147,19 @@ pub fn main() {
         .map(|(val, draw)| (val + 1) * draw.bid)
         .sum::<usize>();
     println!("part: {part}");
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn valid_card_parse() {
+        assert_eq!(Rank::FiveOfKind, Draw::parse_draw("AJJAA 1").rank);
+        assert_eq!(Rank::HighCard, Draw::parse_draw("23456 1").rank);
+        assert_eq!(Rank::FourOfKind, Draw::parse_draw("2JJAA 1").rank);
+        assert_eq!(Rank::FiveOfKind, Draw::parse_draw("AAAAA 1").rank);
+        assert_eq!(Rank::FiveOfKind, Draw::parse_draw("QQJQQ 1").rank);
+        assert_eq!(Rank::ThreeOfKind, Draw::parse_draw("A23AA 1").rank);
+    }
 }

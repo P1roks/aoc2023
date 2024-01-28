@@ -20,18 +20,18 @@ enum Pulse {
     Low,
 }
 
-impl Into<bool> for Pulse {
-    fn into(self) -> bool {
-        match self {
+impl From<Pulse> for bool {
+    fn from(val: Pulse) -> Self {
+        match val {
             Pulse::Low => false,
             Pulse::High => true,
         }
     }
 }
 
-impl Into<Pulse> for bool {
-    fn into(self) -> Pulse {
-        match self {
+impl From<bool> for Pulse {
+    fn from(val: bool) -> Self {
+        match val {
             true => Pulse::High,
             false => Pulse::Low,
         }
@@ -156,7 +156,7 @@ impl Machine {
     }
 
     fn from_bytes(bytes: &[u8]) -> Self {
-        let mut next_idx = (0..usize::MAX).into_iter();
+        let mut next_idx = 0..usize::MAX;
         let mut name_idx_map = HashMap::<u64, usize>::new();
         let mut conj_parent_idxs = HashMap::<usize, Vec<usize>>::new();
 
@@ -207,7 +207,7 @@ impl Machine {
             .position(|(module, _)| module == b"broadcaster")
         {
             let broad = in_out.swap_remove(broad_idx);
-            let idx = get_or_insert_idx(&broad.0);
+            let idx = get_or_insert_idx(broad.0);
             let child_idxs = broad
                 .1
                 .iter()

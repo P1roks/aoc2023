@@ -179,15 +179,9 @@ impl Beam {
     }
 
     fn is_oob(&self, max_x: usize, max_y: usize) -> bool {
-        if self.coords.x > max_x
+        self.coords.x > max_x
             || self.coords.y > max_y
-            || self.coords.x == 0
-            || self.coords.y == 0
-        {
-            true
-        } else {
-            false
-        }
+            || self.coords.x == 0 || self.coords.y == 0
     }
 }
 
@@ -213,7 +207,7 @@ impl Area {
         let (max_x, max_y) = {
             let mut split = bytes.split(|byte| *byte == b'\n');
             let max_y = split.clone().count() - 1;
-            let max_x = split.next().and_then(|arr| Some(arr.len())).unwrap_or(0);
+            let max_x = split.next().map(|arr| arr.len()).unwrap_or(0);
             (max_x, max_y)
         };
 

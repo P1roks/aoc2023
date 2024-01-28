@@ -38,7 +38,7 @@ struct Part {
 
 impl Part {
     fn from_bytes(input: &[u8]) -> Option<Self> {
-        if input.len() == 0 {
+        if input.is_empty() {
             return None;
         }
         let input = &input[1..(input.len() - 1)];
@@ -166,7 +166,7 @@ impl Workflow {
     }
 }
 
-fn solve_part1(parts: &Vec<Part>, workflows: &HashMap<String, Workflow>) -> usize {
+fn solve_part1(parts: &[Part], workflows: &HashMap<String, Workflow>) -> usize {
     parts.iter().fold(0, |acc, part| {
         let mut workflow = "in";
         loop {

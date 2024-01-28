@@ -92,6 +92,24 @@ fn part2(seeds_range: &[Range<i64>], categories: &[Vec<ConvertMap>]) -> i64 {
     location
 }
 
+pub fn main() {
+    let input = include_str!("../../input/day05");
+    let categories = input
+        .split("\n\n")
+        .skip(1)
+        .map(get_maps)
+        .map(|map| map.unwrap())
+        .collect_vec();
+
+    let seeds = parse_seeds(input.lines().next().unwrap());
+    let part1 = part1(&seeds, &categories);
+    println!("part 1: {part1}");
+
+    let seeds_ranges = parse_seeds_ranges(input.lines().next().unwrap());
+    let part2 = part2(&seeds_ranges, &categories);
+    println!("part 2: {part2}");
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -129,22 +147,4 @@ mod test {
         assert_eq!(convert_map.convert(53), Some(55));
         assert_eq!(convert_map.convert(49), None);
     }
-}
-
-pub fn main() {
-    let input = include_str!("../../input/day05");
-    let categories = input
-        .split("\n\n")
-        .skip(1)
-        .map(get_maps)
-        .map(|map| map.unwrap())
-        .collect_vec();
-
-    let seeds = parse_seeds(input.lines().next().unwrap());
-    let part1 = part1(&seeds, &categories);
-    println!("part 1: {part1}");
-
-    let seeds_ranges = parse_seeds_ranges(input.lines().next().unwrap());
-    let part2 = part2(&seeds_ranges, &categories);
-    println!("part 2: {part2}");
 }
