@@ -105,21 +105,22 @@ impl Machine {
         }
 
         let new_pulse = {
-            let node = &mut modules[receiver];
-            match node.r#type {
+            let module = &mut modules[receiver];
+            match module.r#type {
                 Broadcaster => Pulse::Low,
                 FlipFlop(state) if pulse == Pulse::Low => {
                     let new_state = !state;
-                    node.r#type = ModuleType::FlipFlop(new_state);
+                    module.r#type = ModuleType::FlipFlop(new_state);
                     new_state.into()
                 }
                 Conjunction => {
-                    node.parent_states
+                    module
+                        .parent_states
                         .as_mut()
                         .unwrap()
                         .entry(sender)
                         .and_modify(|e| *e = pulse);
-                    if node
+                    if module
                         .parent_states
                         .as_ref()
                         .is_some_and(|states| states.values().all(|val| *val == Pulse::High))
@@ -140,7 +141,7 @@ impl Machine {
         }
     }
 
-    fn solve_part1(&mut self) -> usize {
+    fn solve_part1(mut self) -> usize {
         for _ in 0..1000 {
             self.receive_pulse(0, 0, Pulse::Low);
             while let Some((next_idx, sender, next_pulse)) = self.send_queue.pop_front() {
@@ -151,8 +152,40 @@ impl Machine {
         self.low * self.high
     }
 
-    fn solve_part2(&mut self) -> usize {
-        todo!();
+    fn find_cycle(mut self, module_idx: usize) -> usize {
+        let mut cnt = 1;
+        loop {
+            self.receive_pulse(0, 0, Pulse::Low);
+            while let Some((next_idx, sender, next_pulse)) = self.send_queue.pop_front() {
+                self.receive_pulse(next_idx, sender, next_pulse);
+                if sender == module_idx && next_pulse == Pulse::High {
+                    return cnt;
+                }
+            }
+            cnt += 1;
+        }
+    }
+
+    fn solve_part2(self) -> usize {
+        // conjunction module which points to rx
+        let (second_last_idx, _) = self
+            .modules
+            .iter()
+            .find_position(|module| module.child_idxs.contains(&(self.modules.len() - 1)))
+            .unwrap();
+
+        let mut mod_idxs = self
+            .modules
+            .iter()
+            .enumerate()
+            .filter(|(_, module)| module.child_idxs.contains(&second_last_idx))
+            .map(|(idx, _)| idx)
+            .collect_vec();
+
+        mod_idxs
+            .drain(..)
+            .map(|idx| self.clone().find_cycle(idx))
+            .fold(1, num::integer::lcm)
     }
 
     fn from_bytes(bytes: &[u8]) -> Self {
@@ -222,6 +255,7 @@ impl Machine {
                 _ => panic!(""),
             };
             let idx = get_or_insert_idx(&module[1..]);
+            // println!("{:?} -> {idx}", String::from_utf8_lossy(&module[1..]));
             let child_idxs = out.iter().map(|name| get_or_insert_idx(name)).collect_vec();
             modules[idx] = Module::with_idxs(r#type, child_idxs);
         }
@@ -259,4 +293,7 @@ pub fn main() {
     let machine = Machine::from_bytes(include_bytes!("../../input/day20"));
     let p1 = machine.clone().solve_part1();
     println!("part 1: {p1}");
+
+    let p2 = machine.clone().solve_part2();
+    println!("part 2: {p2}");
 }
